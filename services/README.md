@@ -1,9 +1,17 @@
 # Services
 
-Placeholder for off‑chain components:
+FlowShield off‑chain layer for:
 
-- Risk scoring and route selection
-- Event indexing (refunds, swaps, policy updates)
+- Risk scoring + quote guidance
+- Event indexing (swaps, premiums, refunds)
 - Analytics API for the frontend
+- Profit‑drip planning
 
-Use Flow Access API (HTTP) as the primary data source.
+## Run (Testnet)
+
+```bash
+npm install
+npm run dev
+```
+
+Service defaults to `http://localhost:8787` and polls testnet via the Access API.

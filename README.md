@@ -7,13 +7,13 @@ This repo is intentionally not a monorepo. It’s a single Git repo with clearly
 - `onchain/`
   - Flow CLI scaffold: **DeFi Actions project** (composable DeFi connectors)
 - `onchain-scheduled/`
-  - Flow CLI scaffold: **Scheduled Transactions project**
+  - Flow CLI scaffold: **Scheduled Transactions project** (deferred)
 - `frontend/`
   - Flow React SDK starter template (Next.js + TypeScript, testnet‑ready)
 - `archive/`
   - Older client templates moved out of the main tree
 - `services/`
-  - Off‑chain services placeholder
+  - Off‑chain risk + quote + indexing service
 - `docs/`
   - Technical docs and FlowShield build plan
 
@@ -24,14 +24,13 @@ This repo is intentionally not a monorepo. It’s a single Git repo with clearly
    - `flow emulator`
    - `flow test`
 
-2. On‑chain (Scheduled Transactions)
-   - `cd onchain-scheduled`
-   - `flow emulator`
-   - `flow test`
-
-3. Frontend
+2. Frontend
    - `cd frontend`
    - Follow the Flow React SDK starter README
+
+3. Services
+   - `cd services`
+   - `npm install && npm run dev`
 
 
 ## Notes
@@ -39,3 +38,4 @@ This repo is intentionally not a monorepo. It’s a single Git repo with clearly
 - The on‑chain folders were generated via `flow init` using the CLI scaffolds.
 - For full Flow‑docs‑based build steps, see `docs/FlowShield-FlowDocs-Implementation.md`.
 - The repo is configured for testnet usage by default in the frontend templates.
+- DrawdownShield is intentionally excluded from the current build.

@@ -10,14 +10,17 @@ export function FlowHeader() {
       <div className="container mx-auto px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src="/flow.svg" alt="Flow" className="h-9 w-9" />
-            <span className="text-base font-semibold text-black dark:text-white">
-              Flow Starter
-            </span>
+            <div className="h-9 w-9 rounded-full bg-gradient-to-br from-emerald-400 via-cyan-400 to-blue-500" />
+            <div className="flex flex-col">
+              <span className="text-base font-semibold text-black">
+                FlowShield
+              </span>
+              <span className="text-xs text-black/50">SlipShield Testnet</span>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-[rgb(241,245,249)] dark:bg-[rgb(30,30,30)]">
+            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-black/5">
               <div
                 className="w-4 h-4 rounded-full"
                 style={{
@@ -29,7 +32,7 @@ export function FlowHeader() {
                       : "#a855f7",
                 }}
               ></div>
-              <span className="text-sm font-medium text-black dark:text-white capitalize">
+              <span className="text-sm font-medium text-black capitalize">
                 {flowNetwork}
               </span>
             </div>

@@ -8,3 +8,4 @@ Files:
 - `risk.ts`
 - `metrics.ts`
 - `api.ts`
+- `index.ts`

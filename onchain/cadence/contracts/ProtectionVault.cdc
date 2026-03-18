@@ -31,7 +31,9 @@ access(all) contract ProtectionVault {
         }
     }
 
-    // TODO: Restrict admin creation with entitlements or account checks.
+    // NOTE: For MVP we allow admin creation so the deployer can bootstrap a
+    // treasury admin in their own storage. Production should gate this via
+    // entitlements or a dedicated admin capability.
     access(all) fun createAdmin(): @Admin {
         return <-create Admin()
     }

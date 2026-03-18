@@ -2,5 +2,4 @@
 
 Files:
 - `SlipShieldCard.tsx`
-- `DrawdownCard.tsx`
 - `ProtectionStatus.tsx`

@@ -3,6 +3,8 @@
 ## Purpose
 Implements Scheduled Transactions for automated drawdown checks and re‑entry ladders.
 
+> Deferred in the current SlipShield‑only build.
+
 ## Files to Implement
 
 ### Contracts (`cadence/contracts/`)
