@@ -1,2 +1,8 @@
 // get_protection_limits.cdc
-// TODO: Read current coverage limits and caps.
+// Read current coverage limits and caps.
+
+import "FlowShieldAdmin"
+
+access(all) fun main(): FlowShieldAdmin.Config {
+    return FlowShieldAdmin.getConfig()
+}

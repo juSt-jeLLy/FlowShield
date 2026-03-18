@@ -1,2 +1,18 @@
 // get_policy.cdc
-// TODO: Read a user’s GuardPolicy.
+// Read a user’s GuardPolicy (config + usage).
+
+import "GuardPolicy"
+import "FlowShieldTypes"
+
+access(all) fun main(address: Address): FlowShieldTypes.PolicySnapshot? {
+    let cap = getAccount(address)
+        .getCapability<&{GuardPolicy.PolicyPublic}>(GuardPolicy.PublicPath)
+    let policy = cap.borrow()
+    if policy == nil {
+        return nil
+    }
+    return FlowShieldTypes.PolicySnapshot(
+        config: policy!.getConfig(),
+        usage: policy!.getUsage()
+    )
+}
