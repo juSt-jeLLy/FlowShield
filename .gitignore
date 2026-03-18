@@ -1,0 +1,15 @@
+.DS_Store
+node_modules
+.env
+.env.*
+.env.local
+**/node_modules
+**/.env
+**/.env.*
+**/.next
+**/build
+**/dist
+**/.cache
+**/coverage
+**/flow-*.log
+**/.git.bak
