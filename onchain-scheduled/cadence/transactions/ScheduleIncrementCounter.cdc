@@ -74,6 +74,6 @@ transaction(
             fees: <-fees
         )
 
-        log("Scheduled transaction id: ".concat(transactionId.toString()).concat(" at ").concat(future.toString()))
+        log("Scheduled transaction id: \(transactionId.toString()) at \(future.toString())")
     }
 }

@@ -12,6 +12,6 @@ transaction {
 
         // Retrieve the new count and log it
         let newCount = Counter.getCount()
-        log("New count after incrementing: ".concat(newCount.toString()))
+        log("New count after incrementing: \(newCount.toString())")
     }
 }

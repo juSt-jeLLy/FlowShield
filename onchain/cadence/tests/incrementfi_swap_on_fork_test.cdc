@@ -21,7 +21,7 @@ access(all) fun testIncrementFi_SwapOnFork() {
 	// Arbitrary mainnet account that has FLOW balance and vaults already setup
 	// Fork testing allows impersonating any mainnet account for testing
 	let HOLDER = Test.getAccount(0x42a06f24a1049154)
-	let AMOUNT_IN: UFix64 = 0.001
+	let AMOUNT_IN = 0.001
 
 	let txCode = Test.readFile("../transactions/incrementfi_swap.cdc")
 
@@ -47,5 +47,4 @@ access(all) fun testIncrementFi_SwapOnFork() {
 		log(event)
 	}
 }
-
 

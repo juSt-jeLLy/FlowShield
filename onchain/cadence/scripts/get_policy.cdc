@@ -6,7 +6,7 @@ import "FlowShieldTypes"
 
 access(all) fun main(address: Address): FlowShieldTypes.PolicySnapshot? {
     let cap = getAccount(address)
-        .getCapability<&{GuardPolicy.PolicyPublic}>(GuardPolicy.PublicPath)
+        .capabilities.get<&{GuardPolicy.PolicyPublic}>(GuardPolicy.PublicPath)
     let policy = cap.borrow()
     if policy == nil {
         return nil

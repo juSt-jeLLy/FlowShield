@@ -43,10 +43,10 @@ access(all) contract PriceOracle {
     }
 
     access(all) fun getBandReferenceData(baseSymbol: String, quoteSymbol: String): BandOracle.ReferenceData {
-        let fee = BandOracle.getFee()
         pre {
-            self.feeVault.balance >= fee: "Insufficient oracle fee balance"
+            self.feeVault.balance >= BandOracle.getFee(): "Insufficient oracle fee balance"
         }
+        let fee = BandOracle.getFee()
         let payment <- self.feeVault.withdraw(amount: fee)
         let ref = BandOracle.getReferenceData(baseSymbol: baseSymbol, quoteSymbol: quoteSymbol, payment: <- payment)
         emit OracleQuote(base: baseSymbol, quote: quoteSymbol, rate: ref.fixedPointRate, baseTimestamp: ref.baseTimestamp, quoteTimestamp: ref.quoteTimestamp)

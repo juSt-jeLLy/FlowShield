@@ -9,8 +9,10 @@ access(all) contract ProtectionVault {
     access(all) event RefundPaid(tokenId: String, amount: UFix64)
     access(all) event TreasuryWithdrawn(tokenId: String, amount: UFix64)
 
+    access(all) let AdminStoragePath: StoragePath
+
     // Resource dictionary of token vaults (one per token type)
-    access(account) var vaults: @{String: @FungibleToken.Vault}
+    access(account) var vaults: @{String: {FungibleToken.Vault}}
 
     // Non-resource accounting maps to avoid borrowing resource references
     access(all) var balances: {String: UFix64}
@@ -18,19 +20,38 @@ access(all) contract ProtectionVault {
     access(all) var totalPremiums: {String: UFix64}
     access(all) var totalRefunds: {String: UFix64}
 
+    // Admin resource for treasury withdrawals.
+    access(all) resource interface AdminPublic {
+        access(all) fun withdrawTreasury(tokenId: String, amount: UFix64): @{FungibleToken.Vault}?
+    }
+
+    access(all) resource Admin: AdminPublic {
+        access(all) fun withdrawTreasury(tokenId: String, amount: UFix64): @{FungibleToken.Vault}? {
+            return <-ProtectionVault.withdrawTreasury(tokenId: tokenId, amount: amount)
+        }
+    }
+
+    // TODO: Restrict admin creation with entitlements or account checks.
+    access(all) fun createAdmin(): @Admin {
+        return <-create Admin()
+    }
+
     init() {
+        self.AdminStoragePath = /storage/FlowShieldVaultAdmin
         self.vaults <- {}
         self.balances = {}
         self.totalDeposits = {}
         self.totalPremiums = {}
         self.totalRefunds = {}
+
+        self.account.storage.save(<-create Admin(), to: self.AdminStoragePath)
     }
 
-    access(all) fun depositUnderwriter(vault: @FungibleToken.Vault) {
+    access(all) fun depositUnderwriter(vault: @{FungibleToken.Vault}) {
         self.depositInternal(vault: <-vault, kind: "underwriter")
     }
 
-    access(all) fun depositPremium(vault: @FungibleToken.Vault) {
+    access(all) fun depositPremium(vault: @{FungibleToken.Vault}) {
         self.depositInternal(vault: <-vault, kind: "premium")
     }
 
@@ -48,10 +69,10 @@ access(all) contract ProtectionVault {
     }
 
     access(all) fun hasPool(tokenId: String): Bool {
-        return self.balances[tokenId] != nil
+        return self.vaults.containsKey(tokenId)
     }
 
-    access(account) fun withdrawRefund(tokenId: String, amount: UFix64): @FungibleToken.Vault? {
+    access(account) fun withdrawRefund(tokenId: String, amount: UFix64): @{FungibleToken.Vault}? {
         if amount <= 0.0 {
             return nil
         }
@@ -62,7 +83,7 @@ access(all) contract ProtectionVault {
         let payoutAmount = amount <= current ? amount : current
         let pool <- self.vaults.remove(key: tokenId) ?? panic("Missing pool for token")
         let payout <- pool.withdraw(amount: payoutAmount)
-        self.vaults[tokenId] <- pool
+        self.vaults[tokenId] <-! pool
 
         self.balances[tokenId] = current - payoutAmount
         self.totalRefunds[tokenId] = (self.totalRefunds[tokenId] ?? 0.0) + payoutAmount
@@ -70,7 +91,7 @@ access(all) contract ProtectionVault {
         return <-payout
     }
 
-    access(account) fun withdrawTreasury(tokenId: String, amount: UFix64): @FungibleToken.Vault? {
+    access(account) fun withdrawTreasury(tokenId: String, amount: UFix64): @{FungibleToken.Vault}? {
         if amount <= 0.0 {
             return nil
         }
@@ -81,14 +102,14 @@ access(all) contract ProtectionVault {
         let payoutAmount = amount <= current ? amount : current
         let pool <- self.vaults.remove(key: tokenId) ?? panic("Missing pool for token")
         let payout <- pool.withdraw(amount: payoutAmount)
-        self.vaults[tokenId] <- pool
+        self.vaults[tokenId] <-! pool
 
         self.balances[tokenId] = current - payoutAmount
         emit TreasuryWithdrawn(tokenId: tokenId, amount: payoutAmount)
         return <-payout
     }
 
-    access(self) fun depositInternal(vault: @FungibleToken.Vault, kind: String) {
+    access(self) fun depositInternal(vault: @{FungibleToken.Vault}, kind: String) {
         let amount = vault.balance
         if amount <= 0.0 {
             destroy vault
@@ -96,13 +117,13 @@ access(all) contract ProtectionVault {
         }
 
         let tokenId = vault.getType().identifier
-        if self.vaults[tokenId] == nil {
-            self.vaults[tokenId] <- vault
+        if !self.vaults.containsKey(tokenId) {
+            self.vaults[tokenId] <-! vault
         } else {
             let existing <- self.vaults.remove(key: tokenId)
                 ?? panic("Missing pool for token")
             existing.deposit(from: <-vault)
-            self.vaults[tokenId] <- existing
+            self.vaults[tokenId] <-! existing
         }
 
         self.balances[tokenId] = (self.balances[tokenId] ?? 0.0) + amount

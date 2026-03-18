@@ -49,7 +49,7 @@ access(all) contract ExampleConnectors {
                 "Invalid vault provided for deposit - \(from.getType().identifier) is not \(self.getSinkType().identifier)"
             }
             // No-op for empty transfers
-            let amount: UFix64 = from.balance
+            let amount = from.balance
             if amount == 0.0 { return }
             // Move all funds and deposit
             let payment <- from.withdraw(amount: amount)
@@ -76,4 +76,3 @@ access(all) contract ExampleConnectors {
         }
     }
 }
-

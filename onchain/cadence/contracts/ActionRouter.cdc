@@ -20,7 +20,7 @@ access(all) contract ActionRouter {
     )
 
     access(all) fun settleSwap(
-        output: @FungibleToken.Vault,
+        output: @{FungibleToken.Vault},
         expectedOut: UFix64,
         policy: &GuardPolicy.Policy,
         userReceiver: Capability<&{FungibleToken.Receiver}>
@@ -55,8 +55,8 @@ access(all) contract ActionRouter {
             return
         }
 
-        let minOut = Self.minOut(expectedOut: expectedOut, slippageBps: config.maxSlippageBps)
-        let premium = Self.bpsMul(amount: actualOut, bps: config.premiumBps)
+        let minOut = ActionRouter.minOut(expectedOut: expectedOut, slippageBps: config.maxSlippageBps)
+        let premium = ActionRouter.bpsMul(amount: actualOut, bps: config.premiumBps)
 
         var outputVault <- output
         if premium > 0.0 {
@@ -65,19 +65,18 @@ access(all) contract ActionRouter {
         }
 
         let targetNet = minOut + premium
-        var refundRequested: UFix64 = 0.0
+        var refundRequested = 0.0
         if actualOut < targetNet {
             refundRequested = targetNet - actualOut
         }
 
         let now = getCurrentBlock().timestamp
         let allowed = policy.allowedRefund(requested: refundRequested, now: now)
-        var refundPaid: UFix64 = 0.0
+        var refundPaid = 0.0
 
         if allowed > 0.0 {
             let refundVault <- ProtectionVault.withdrawRefund(tokenId: tokenId, amount: allowed)
-            if refundVault != nil {
-                let payout <- refundVault!
+            if let payout <- refundVault {
                 refundPaid = payout.balance
                 if refundPaid > 0.0 {
                     policy.recordRefund(amount: refundPaid, now: now)
