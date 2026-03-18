@@ -12,16 +12,17 @@ import "DeFiActions"
 import "FungibleToken"
 import "FlowToken"
 import "IncrementFiSwapConnectors"
-import "SwapConfig"
 
 transaction(amountIn: UFix64, inVaultType: Type, outVaultType: Type) {
     prepare(acct: auth(BorrowValue) &Account) {
         let opID = DeFiActions.createUniqueIdentifier()
         
         // Construct swap path from vault types
+        let inTypeId = inVaultType.identifier
+        let outTypeId = outVaultType.identifier
         let swapPath = [
-            SwapConfig.SliceTokenTypeIdentifierFromVaultType(vaultTypeIdentifier: inVaultType.identifier),
-            SwapConfig.SliceTokenTypeIdentifierFromVaultType(vaultTypeIdentifier: outVaultType.identifier)
+            inTypeId.slice(from: 0, upTo: inTypeId.length - 6),
+            outTypeId.slice(from: 0, upTo: outTypeId.length - 6)
         ]
         
         let swapper = IncrementFiSwapConnectors.Swapper(
@@ -38,5 +39,4 @@ transaction(amountIn: UFix64, inVaultType: Type, outVaultType: Type) {
         destroy out
     }
 }
-
 

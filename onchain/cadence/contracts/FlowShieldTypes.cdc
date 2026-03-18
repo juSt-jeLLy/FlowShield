@@ -2,8 +2,13 @@
 // Shared structs, constants, and helper types used across FlowShield contracts.
 
 access(all) contract FlowShieldTypes {
-    access(all) let MaxBps: UInt64 = 10_000
-    access(all) let DefaultEpochSeconds: UFix64 = 86_400.0
+    access(all) let MaxBps: UInt64
+    access(all) let DefaultEpochSeconds: UFix64
+
+    init() {
+        self.MaxBps = 10_000
+        self.DefaultEpochSeconds = 86_400.0
+    }
 
     access(all) struct PolicyConfig {
         access(all) let enabled: Bool

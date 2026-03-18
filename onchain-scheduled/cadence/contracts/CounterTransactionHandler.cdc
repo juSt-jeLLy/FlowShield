@@ -5,10 +5,10 @@ access(all) contract CounterTransactionHandler {
 
     /// Handler resource that implements the Scheduled Transaction interface
     access(all) resource Handler: FlowTransactionScheduler.TransactionHandler {
-        access(FlowTransactionScheduler.Execute) fun executeTransaction(id: UInt64, data: AnyStruct?) {
+        access(FlowTransactionScheduler.Execute) fun executeTransaction(id: UInt64, data _data: AnyStruct?) {
             Counter.increment()
             let newCount = Counter.getCount()
-            log("Transaction executed (id: ".concat(id.toString()).concat(") newCount: ").concat(newCount.toString()))
+            log("Transaction executed (id: \(id.toString())) newCount: \(newCount.toString())")
         }
 
         access(all) view fun getViews(): [Type] {

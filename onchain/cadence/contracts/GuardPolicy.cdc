@@ -4,8 +4,8 @@
 import "FlowShieldTypes"
 
 access(all) contract GuardPolicy {
-    access(all) let StoragePath: StoragePath = /storage/FlowShieldPolicy
-    access(all) let PublicPath: PublicPath = /public/FlowShieldPolicy
+    access(all) let StoragePath: StoragePath
+    access(all) let PublicPath: PublicPath
 
     access(all) event PolicyCreated()
     access(all) event PolicyUpdated()
@@ -43,7 +43,7 @@ access(all) contract GuardPolicy {
             emit PolicyUpdated()
         }
 
-        access(account) fun refreshEpoch(now: UFix64) {
+        access(all) fun refreshEpoch(now: UFix64) {
             if now >= self.epochStart + self.config.epochSeconds {
                 self.epochStart = now
                 self.usedThisEpoch = 0.0
@@ -51,7 +51,7 @@ access(all) contract GuardPolicy {
             }
         }
 
-        access(account) fun availableRefund(now: UFix64): UFix64 {
+        access(all) fun availableRefund(now: UFix64): UFix64 {
             self.refreshEpoch(now: now)
             if self.usedThisEpoch >= self.config.maxRefundPerEpoch {
                 return 0.0
@@ -59,7 +59,7 @@ access(all) contract GuardPolicy {
             return self.config.maxRefundPerEpoch - self.usedThisEpoch
         }
 
-        access(account) fun allowedRefund(requested: UFix64, now: UFix64): UFix64 {
+        access(all) fun allowedRefund(requested: UFix64, now: UFix64): UFix64 {
             if requested <= 0.0 {
                 return 0.0
             }
@@ -77,13 +77,18 @@ access(all) contract GuardPolicy {
             return allowed
         }
 
-        access(account) fun recordRefund(amount: UFix64, now: UFix64) {
+        access(all) fun recordRefund(amount: UFix64, now: UFix64) {
             if amount <= 0.0 {
                 return
             }
             self.refreshEpoch(now: now)
             self.usedThisEpoch = self.usedThisEpoch + amount
         }
+    }
+
+    init() {
+        self.StoragePath = /storage/FlowShieldPolicy
+        self.PublicPath = /public/FlowShieldPolicy
     }
 
     access(all) fun createDefaultConfig(): FlowShieldTypes.PolicyConfig {
