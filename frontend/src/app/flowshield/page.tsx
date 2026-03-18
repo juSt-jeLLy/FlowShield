@@ -1,5 +1,11 @@
-// FlowShield page
-// TODO: Compose SlipShieldCard, DrawdownCard, and ProtectionStatus.
+import { SlipShieldCard } from "@/components/flowshield/SlipShieldCard";
+import { ProtectionStatus } from "@/components/flowshield/ProtectionStatus";
+
 export default function FlowShieldPage() {
-  return null;
+  return (
+    <div className="space-y-8">
+      <SlipShieldCard />
+      <ProtectionStatus />
+    </div>
+  );
 }

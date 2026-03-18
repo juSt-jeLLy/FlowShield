@@ -6,6 +6,7 @@ import "GuardPolicy"
 import "ProtectionVault"
 import "FlowShieldAdmin"
 import "ActionRouter"
+import "MockSwap"
 
 access(all) let serviceAccount = Test.serviceAccount()
 
@@ -65,22 +66,27 @@ access(all) fun setup() {
         arguments: []
     )
     Test.expect(err, Test.beNil())
+
+    err = Test.deployContract(
+        name: "MockSwap",
+        path: "../contracts/MockSwap.cdc",
+        arguments: []
+    )
+    Test.expect(err, Test.beNil())
 }
 
-access(all) fun testSlippageRefund() {
+access(all) fun testSlipShieldProtectedSwap() {
     setup()
 
-    // Enable protection with no premium for predictable refund math.
     let setPolicyTx = Test.Transaction(
         code: Test.readFile("../transactions/set_policy.cdc"),
         authorizers: [serviceAccount.address],
         signers: [serviceAccount],
-        arguments: [true, UInt64(0), 10.0, 100.0, 86_400.0, UInt64(0)]
+        arguments: [true, UInt64(500), 5.0, 50.0, 86_400.0, UInt64(100)]
     )
     let setPolicyRes = Test.executeTransaction(setPolicyTx)
     Test.expect(setPolicyRes, Test.beSucceeded())
 
-    // Fund the refund pool.
     let fundTx = Test.Transaction(
         code: Test.readFile("../transactions/fund_vault.cdc"),
         authorizers: [serviceAccount.address],
@@ -90,18 +96,21 @@ access(all) fun testSlippageRefund() {
     let fundRes = Test.executeTransaction(fundTx)
     Test.expect(fundRes, Test.beSucceeded())
 
-    // Simulate a swap with actualOut < expectedOut to trigger a refund.
-    let settleTx = Test.Transaction(
-        code: Test.readFile("../transactions/settle_mock_swap.cdc"),
+    let depositEvents = Test.eventsOfType(Type<ProtectionVault.VaultDeposit>())
+    let depositEvent = depositEvents[depositEvents.length - 1] as! ProtectionVault.VaultDeposit
+    let tokenId = depositEvent.tokenId
+
+    let protectedTx = Test.Transaction(
+        code: Test.readFile("../transactions/mock_protected_swap.cdc"),
         authorizers: [serviceAccount.address],
         signers: [serviceAccount],
-        arguments: [10.0, 5.0]
+        arguments: [10.0, 8.0, 0.0]
     )
-    let settleRes = Test.executeTransaction(settleTx)
-    Test.expect(settleRes, Test.beSucceeded())
+    let protectedRes = Test.executeTransaction(protectedTx)
+    Test.expect(protectedRes, Test.beSucceeded())
 
-    let tokenId = Type<@FlowToken.Vault>().identifier
     let stats = ProtectionVault.getStats(tokenId: tokenId)
-    assert(stats.totalRefunds == 5.0, message: "expected totalRefunds to be 5.0")
-    assert(stats.balance == 5.0, message: "expected vault balance to be 5.0 after refund")
+    assert(stats.totalPremiums == 0.08, message: "expected premium to be 0.08")
+    assert(stats.totalRefunds == 1.58, message: "expected refund to be 1.58")
+    assert(stats.balance == 8.5, message: "expected vault balance to be 8.5")
 }

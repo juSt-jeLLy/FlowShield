@@ -6,15 +6,12 @@ This document maps every major build step to the Flow documentation that explain
 
 ## 1) What We’re Building (FlowShield)
 
-FlowShield is a consumer‑DeFi protection layer with two core modules:
+FlowShield is a consumer‑DeFi protection layer focused on SlipShield.
+DrawdownShield is intentionally deferred in this build.
 
 SlipShield
 - Adds slippage‑refund protection to swaps.
 - Executes swaps via Flow Actions and only allows refunds through entitlement‑gated vault logic.
-
-DrawdownShield
-- Automated stop‑loss + re‑entry ladder.
-- Uses Scheduled Transactions for autonomous checks and re‑entry scheduling.
 
 ---
 
@@ -27,8 +24,8 @@ DrawdownShield
 | Flow Actions: Transaction | Shows how to assemble actions in a single atomic transaction | Used in ActionRouter transactions | https://developers.flow.com/blockchain-development-tutorials/forte/flow-actions/flow-actions-transaction |
 | Flow Actions: Connectors | Adapter layer that binds Actions to real protocols | Needed for DEX adapters | https://developers.flow.com/blockchain-development-tutorials/forte/flow-actions/connectors |
 | Flow Actions: Basic Combinations | Patterns for chaining Actions | Used for swap + refund workflows | https://developers.flow.com/blockchain-development-tutorials/forte/flow-actions/basic-combinations |
-| Scheduled Transactions (tutorials) | Drawdown checks + re‑entry scheduling | Onchain automation without keepers | https://developers.flow.com/blockchain-development-tutorials/forte/scheduled-transactions |
-| Scheduled Transactions (CLI) | Dev tooling + manager resource setup | Required to manage scheduled jobs in dev/test | https://developers.flow.com/build/tools/flow-cli/scheduled-transactions |
+| Scheduled Transactions (tutorials) | Drawdown checks + re‑entry scheduling | Deferred | https://developers.flow.com/blockchain-development-tutorials/forte/scheduled-transactions |
+| Scheduled Transactions (CLI) | Dev tooling + manager resource setup | Deferred | https://developers.flow.com/build/tools/flow-cli/scheduled-transactions |
 | Cadence Access Control + Entitlements | ProtectionVault + GuardPolicy permissions | Fine‑grained control over sensitive calls | https://cadence-lang.org/docs/language/access-control |
 | Cadence Capabilities | Safe account access + capability issuance | Used for entitlement‑scoped access | https://cadence-lang.org/docs/language/capabilities |
 | Cadence References | Authorized references via entitlements | Used for escrow/refund vault gating | https://cadence-lang.org/docs/language/references |
@@ -115,7 +112,7 @@ Execution
 
 ---
 
-### Step 4 — Scheduled Transactions (DrawdownShield)
+### Step 4 — Scheduled Transactions (DrawdownShield, deferred)
 Goal: autonomous stop‑loss checks + re‑entry ladder.
 
 Resources
@@ -199,7 +196,7 @@ SlipShield
 - ActionRouter composes the swap via Actions.
 - If output < min‑acceptable, ProtectionVault refunds the delta.
 
-DrawdownShield
+DrawdownShield (Deferred)
 - Scheduled Transaction checks price thresholds.
 - If drawdown breached, execute exit transaction.
 - Schedule re‑entry ladder based on recovery thresholds.
@@ -212,9 +209,8 @@ DrawdownShield
 2. Cadence access control + entitlements
 3. ProtectionVault + GuardPolicy contracts
 4. Flow Actions swap transaction + connector for 1 DEX
-5. Scheduled Transactions integration + stop‑loss handler
-6. Frontend UI with React SDK
-7. Gasless UX + analytics layer
+5. Frontend UI with React SDK
+6. Gasless UX + analytics layer
 
 ---
 
@@ -229,4 +225,3 @@ Flow Actions are being reviewed under a FLIP and may change. Keep connectors mod
 - LP‑guard mode using Flow Actions combos.
 - Auto‑rebalance vaults using Scheduled Transactions.
 - Protection score engine based on onchain metrics from Access API.
-

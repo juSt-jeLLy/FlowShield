@@ -18,6 +18,7 @@ Implements slippage protection, refund vault logic, and ActionRouter‑based swa
 - `setup_user.cdc` — creates user policy storage + capabilities.
 - `fund_vault.cdc` — deposits assets into the refund pool.
 - `withdraw_vault.cdc` — admin or underwriter withdrawal (per rules).
+- `profit_drip.cdc` — scheduled premium sweep to treasury receiver.
 - `set_policy.cdc` — creates or updates GuardPolicy for a user.
 - `protected_swap.cdc` — runs swap + checks slippage + triggers refund if needed.
 

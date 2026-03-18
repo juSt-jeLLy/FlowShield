@@ -63,6 +63,47 @@ access(all) contract FlowShieldTypes {
         }
     }
 
+    // SlipShieldConfig defines the minimal protection settings for a swap.
+    access(all) struct SlipShieldConfig {
+        access(all) let enabled: Bool
+        access(all) let maxSlippageBps: UInt64
+        access(all) let premiumBps: UInt64
+        access(all) let minProtectionAmount: UFix64
+
+        init(
+            enabled: Bool,
+            maxSlippageBps: UInt64,
+            premiumBps: UInt64,
+            minProtectionAmount: UFix64
+        ) {
+            pre {
+                maxSlippageBps <= FlowShieldTypes.MaxBps:
+                    "maxSlippageBps must be <= 10_000"
+                premiumBps <= FlowShieldTypes.MaxBps:
+                    "premiumBps must be <= 10_000"
+                minProtectionAmount >= 0.0:
+                    "minProtectionAmount must be >= 0"
+            }
+            self.enabled = enabled
+            self.maxSlippageBps = maxSlippageBps
+            self.premiumBps = premiumBps
+            self.minProtectionAmount = minProtectionAmount
+        }
+    }
+
+    // SlipShieldQuote captures pricing inputs used for protection math.
+    access(all) struct SlipShieldQuote {
+        access(all) let expectedOut: UFix64
+        access(all) let minOut: UFix64
+        access(all) let maxRefund: UFix64
+
+        init(expectedOut: UFix64, minOut: UFix64, maxRefund: UFix64) {
+            self.expectedOut = expectedOut
+            self.minOut = minOut
+            self.maxRefund = maxRefund
+        }
+    }
+
     access(all) struct VaultStats {
         access(all) let totalDeposits: UFix64
         access(all) let totalPremiums: UFix64

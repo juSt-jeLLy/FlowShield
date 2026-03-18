@@ -5,7 +5,7 @@ This file is the master map of what gets built where. Each folder also has its o
 ## Folder Map
 
 - `onchain/` — SlipShield core contracts and ActionRouter (Flow Actions).
-- `onchain-scheduled/` — DrawdownShield scheduler prototype (Scheduled Transactions).
+- `onchain-scheduled/` — DrawdownShield scheduler prototype (deferred in current build).
 - `frontend/` — Flow React SDK starter (Next.js + TypeScript) with FlowShield UI.
 - `services/` — Off‑chain indexer + risk scoring + API.
 - `docs/` — Architecture, deployment, and runbooks.
@@ -19,7 +19,6 @@ This file is the master map of what gets built where. Each folder also has its o
 ## Build Order (suggested)
 
 1. `onchain/` — ProtectionVault, GuardPolicy, ActionRouter, and protected swap transaction.
-2. `onchain-scheduled/` — DrawdownPolicy, oracle adapter, and scheduler handler.
-3. `frontend/` — wallet connect, policy setup UI, protected swap UI.
-4. `services/` — indexer + risk scoring + analytics endpoints.
-5. `docs/` — finalize architecture + deployment guide for testnet.
+2. `frontend/` — wallet connect, policy setup UI, protected swap UI.
+3. `services/` — indexer + risk scoring + analytics endpoints.
+4. `docs/` — finalize architecture + deployment guide for testnet.
