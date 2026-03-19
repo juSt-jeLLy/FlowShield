@@ -7,10 +7,15 @@ import type {
   ProtectedSwapInput,
   ProfitDripInput,
 } from "./types";
+import {
+  flowShieldAddress,
+  fungibleTokenAddress,
+  stFlowTokenAddress,
+} from "./config";
 
 export const SET_POLICY_CADENCE = `// set_policy.cdc
-import "GuardPolicy"
-import "FlowShieldTypes"
+import GuardPolicy from ${flowShieldAddress}
+import FlowShieldTypes from ${flowShieldAddress}
 
 transaction(
     enabled: Bool,
@@ -41,8 +46,8 @@ transaction(
 `;
 
 export const FUND_VAULT_CADENCE = `// fund_vault.cdc
-import "FungibleToken"
-import "ProtectionVault"
+import FungibleToken from ${fungibleTokenAddress}
+import ProtectionVault from ${flowShieldAddress}
 
 transaction(amount: UFix64, fromVaultPath: StoragePath) {
     prepare(acct: auth(BorrowValue) &Account) {
@@ -55,9 +60,9 @@ transaction(amount: UFix64, fromVaultPath: StoragePath) {
 `;
 
 export const PROTECTED_SWAP_CADENCE = `// protected_swap.cdc
-import "FungibleToken"
-import "GuardPolicy"
-import "IncrementFiAdapter"
+import FungibleToken from ${fungibleTokenAddress}
+import GuardPolicy from ${flowShieldAddress}
+import IncrementFiAdapter from ${flowShieldAddress}
 
 transaction(
     amountIn: UFix64,
@@ -92,8 +97,8 @@ transaction(
 `;
 
 export const SETUP_STFLOW_VAULT_CADENCE = `// setup_stflow_vault.cdc
-import "FungibleToken"
-import "stFlowToken"
+import FungibleToken from ${fungibleTokenAddress}
+import stFlowToken from ${stFlowTokenAddress}
 
 transaction {
     prepare(acct: auth(BorrowValue, SaveValue, Capabilities) &Account) {
@@ -111,8 +116,8 @@ transaction {
 `;
 
 export const PROFIT_DRIP_CADENCE = `// profit_drip.cdc
-import "FungibleToken"
-import "ProtectionVault"
+import FungibleToken from ${fungibleTokenAddress}
+import ProtectionVault from ${flowShieldAddress}
 
 transaction(tokenId: String, amount: UFix64, receiverPath: PublicPath) {
     prepare(acct: auth(BorrowValue, SaveValue, Capabilities) &Account) {

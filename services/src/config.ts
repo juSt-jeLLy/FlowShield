@@ -13,13 +13,17 @@ const boolEnv = (value: string | undefined, fallback: boolean) => {
   return value.toLowerCase() === "true";
 };
 
+const rawAddress = process.env.FLOWSHIELD_ADDRESS ?? "d23d4404df96f641";
+const contractAddress = rawAddress.replace(/^0x/, "");
+const contractAddressHex = `0x${contractAddress}`;
+
 export const config = {
   port: numberEnv(process.env.PORT, 8787),
   flowNetwork: process.env.FLOW_NETWORK ?? "testnet",
   accessNode:
     process.env.FLOW_ACCESS_NODE ?? "https://rest-testnet.onflow.org",
-  contractAddress: (process.env.FLOWSHIELD_ADDRESS ?? "d23d4404df96f641")
-    .replace(/^0x/, ""),
+  contractAddress,
+  contractAddressHex,
   tokenId:
     process.env.FLOWSHIELD_TOKEN_ID ??
     "A.7e60df042a9c0868.FlowToken.Vault",

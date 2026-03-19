@@ -1,8 +1,8 @@
 // set_policy.cdc
 // Create or update GuardPolicy for a user.
 
-import "GuardPolicy"
-import "FlowShieldTypes"
+import GuardPolicy from 0xd23d4404df96f641
+import FlowShieldTypes from 0xd23d4404df96f641
 
 transaction(
     enabled: Bool,

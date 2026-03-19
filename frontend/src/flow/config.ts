@@ -19,3 +19,6 @@ export const flowShieldAddress =
 export const flowShieldServiceUrl =
   process.env.NEXT_PUBLIC_FLOWSHIELD_SERVICE_URL ??
   "http://localhost:8787";
+
+export const fungibleTokenAddress = "0x9a0766d93b6608b7";
+export const stFlowTokenAddress = "0xe45c64ecfe31e465";

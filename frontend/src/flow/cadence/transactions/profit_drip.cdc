@@ -1,8 +1,8 @@
 // profit_drip.cdc
 // Scheduled or manual premium sweep from ProtectionVault treasury.
 
-import "FungibleToken"
-import "ProtectionVault"
+import FungibleToken from 0x9a0766d93b6608b7
+import ProtectionVault from 0xd23d4404df96f641
 
 transaction(tokenId: String, amount: UFix64, receiverPath: PublicPath) {
     prepare(acct: auth(BorrowValue, SaveValue, Capabilities) &Account) {
