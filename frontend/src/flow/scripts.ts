@@ -1,9 +1,11 @@
 // scripts.ts
 // Read-only Cadence scripts for FlowShield.
 
+import { flowShieldAddress } from "./config";
+
 export const GET_POLICY_CADENCE = `// get_policy.cdc
-import "GuardPolicy"
-import "FlowShieldTypes"
+import GuardPolicy from ${flowShieldAddress}
+import FlowShieldTypes from ${flowShieldAddress}
 
 access(all) fun main(address: Address): FlowShieldTypes.PolicySnapshot? {
     let cap = getAccount(address)
@@ -20,8 +22,8 @@ access(all) fun main(address: Address): FlowShieldTypes.PolicySnapshot? {
 `;
 
 export const GET_VAULT_STATS_CADENCE = `// get_vault_stats.cdc
-import "ProtectionVault"
-import "FlowShieldTypes"
+import ProtectionVault from ${flowShieldAddress}
+import FlowShieldTypes from ${flowShieldAddress}
 
 access(all) fun main(tokenId: String): FlowShieldTypes.VaultStats {
     return ProtectionVault.getStats(tokenId: tokenId)
@@ -29,7 +31,7 @@ access(all) fun main(tokenId: String): FlowShieldTypes.VaultStats {
 `;
 
 export const GET_PROTECTION_LIMITS_CADENCE = `// get_protection_limits.cdc
-import "FlowShieldAdmin"
+import FlowShieldAdmin from ${flowShieldAddress}
 
 access(all) fun main(): FlowShieldAdmin.Config {
     return FlowShieldAdmin.getConfig()

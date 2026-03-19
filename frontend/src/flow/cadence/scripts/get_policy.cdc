@@ -2,8 +2,8 @@
 // get_policy.cdc
 // Read a user’s GuardPolicy (config + usage).
 
-import "GuardPolicy"
-import "FlowShieldTypes"
+import GuardPolicy from 0xd23d4404df96f641
+import FlowShieldTypes from 0xd23d4404df96f641
 
 access(all) fun main(address: Address): FlowShieldTypes.PolicySnapshot? {
     let cap = getAccount(address)

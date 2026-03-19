@@ -1,9 +1,9 @@
 // protected_swap.cdc
 // Execute swap via IncrementFi adapter and settle with ActionRouter.
 
-import "FungibleToken"
-import "GuardPolicy"
-import "IncrementFiAdapter"
+import FungibleToken from 0x9a0766d93b6608b7
+import GuardPolicy from 0xd23d4404df96f641
+import IncrementFiAdapter from 0xd23d4404df96f641
 
 transaction(
     amountIn: UFix64,

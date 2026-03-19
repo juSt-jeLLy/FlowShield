@@ -1,9 +1,15 @@
 "use client";
 
 import { Connect, useFlowConfig } from "@onflow/react-sdk";
+import { useEffect, useState } from "react";
 
 export function FlowHeader() {
   const { flowNetwork } = useFlowConfig();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className="w-full">
@@ -36,7 +42,11 @@ export function FlowHeader() {
                 {flowNetwork}
               </span>
             </div>
-            <Connect />
+            {mounted ? (
+              <Connect />
+            ) : (
+              <div className="h-10 w-24 rounded-full bg-black/5" />
+            )}
           </div>
         </div>
       </div>

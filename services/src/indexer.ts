@@ -19,9 +19,9 @@ const EVENT_TYPES = {
   treasuryWithdrawn: `A.${config.contractAddress}.ProtectionVault.TreasuryWithdrawn`,
 };
 
-const VAULT_STATS_SCRIPT = `// get_vault_stats.cdc
-import "ProtectionVault"
-import "FlowShieldTypes"
+const buildVaultStatsScript = (address: string) => `// get_vault_stats.cdc
+import ProtectionVault from ${address}
+import FlowShieldTypes from ${address}
 
 access(all) fun main(tokenId: String): FlowShieldTypes.VaultStats {
   return ProtectionVault.getStats(tokenId: tokenId)
@@ -51,7 +51,7 @@ async function fetchEvents(eventType: string, startHeight: number, endHeight: nu
 
 async function fetchVaultStats(tokenId: string) {
   const response = await fcl.query({
-    cadence: VAULT_STATS_SCRIPT,
+    cadence: buildVaultStatsScript(config.contractAddressHex),
     args: (arg: any) => [arg(tokenId, t.String)],
   });
   return response as {
@@ -63,8 +63,15 @@ async function fetchVaultStats(tokenId: string) {
 }
 
 export async function startIndexer(storage: Storage, metrics: Metrics) {
-  fcl.config().put("accessNode.api", config.accessNode);
-  fcl.config().put("flow.network", config.flowNetwork);
+  fcl
+    .config()
+    .put("accessNode.api", config.accessNode)
+    .put("flow.network", config.flowNetwork)
+    .put("contracts.FlowShieldTypes", config.contractAddressHex)
+    .put("contracts.ProtectionVault", config.contractAddressHex)
+    .put("contracts.FlowShieldAdmin", config.contractAddressHex)
+    .put("contracts.GuardPolicy", config.contractAddressHex)
+    .put("contracts.ActionRouter", config.contractAddressHex);
 
   const poll = async () => {
     try {

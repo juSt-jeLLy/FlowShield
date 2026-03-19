@@ -1,8 +1,8 @@
 // setup_stflow_vault.cdc
 // Initializes a stFLOW vault + receiver capability for the signer.
 
-import "FungibleToken"
-import "stFlowToken"
+import FungibleToken from 0x9a0766d93b6608b7
+import stFlowToken from 0xe45c64ecfe31e465
 
 transaction {
     prepare(acct: auth(BorrowValue, SaveValue, Capabilities) &Account) {
