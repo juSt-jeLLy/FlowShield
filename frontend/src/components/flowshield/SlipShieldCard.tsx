@@ -6,6 +6,7 @@ import {
   buildProtectedSwapArgs,
   buildSetPolicyArgs,
   PROTECTED_SWAP_CADENCE,
+  SETUP_STFLOW_VAULT_CADENCE,
   SET_POLICY_CADENCE,
 } from "@/flow/transactions";
 import { flowShieldServiceUrl } from "@/flow/config";
@@ -40,6 +41,11 @@ export function SlipShieldCard() {
     useFlowMutate();
   const { mutate: executeSwap, isPending: swapping, error: swapError } =
     useFlowMutate();
+  const {
+    mutate: setupStFlowVault,
+    isPending: settingUpVault,
+    error: setupError,
+  } = useFlowMutate();
 
   const tokenInMeta = useMemo(
     () => TOKENS.find((token) => token.symbol === tokenIn) ?? DEFAULT_TOKEN_IN,
@@ -105,6 +111,13 @@ export function SlipShieldCard() {
         arg(tokenInMeta.storagePath, t.Path),
         arg(tokenOutMeta.receiverPath, t.Path),
       ],
+    });
+  };
+
+  const handleSetupStFlowVault = () => {
+    setupStFlowVault({
+      cadence: SETUP_STFLOW_VAULT_CADENCE,
+      args: (arg, t) => [],
     });
   };
 
@@ -253,6 +266,26 @@ export function SlipShieldCard() {
               </select>
             </label>
           </div>
+
+          {tokenOutMeta.symbol === "stFLOW" && (
+            <div className="rounded-2xl border border-black/10 bg-white p-3 text-sm space-y-2">
+              <div className="text-xs text-black/50">
+                stFLOW vault required for output. Run setup once.
+              </div>
+              <button
+                onClick={handleSetupStFlowVault}
+                disabled={settingUpVault || !user?.addr}
+                className="w-full rounded-xl border border-black/10 py-2 text-sm font-semibold hover:bg-black/5 disabled:opacity-60"
+              >
+                {settingUpVault ? "Setting up..." : "Setup stFLOW Vault"}
+              </button>
+              {setupError && (
+                <p className="text-xs text-red-500">
+                  {normalizeFlowError(setupError)}
+                </p>
+              )}
+            </div>
+          )}
 
           <button
             onClick={handleQuote}

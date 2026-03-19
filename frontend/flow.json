@@ -61,6 +61,12 @@
       "aliases": {
         "testnet": "7e60df042a9c0868"
       }
+    },
+    "stFlowToken": {
+      "source": "testnet://e45c64ecfe31e465.stFlowToken",
+      "aliases": {
+        "testnet": "e45c64ecfe31e465"
+      }
     }
   },
   "networks": {

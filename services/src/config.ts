@@ -17,7 +17,7 @@ export const config = {
   port: numberEnv(process.env.PORT, 8787),
   flowNetwork: process.env.FLOW_NETWORK ?? "testnet",
   accessNode:
-    process.env.FLOW_ACCESS_NODE ?? "access.devnet.nodes.onflow.org:9000",
+    process.env.FLOW_ACCESS_NODE ?? "https://rest-testnet.onflow.org",
   contractAddress: (process.env.FLOWSHIELD_ADDRESS ?? "d23d4404df96f641")
     .replace(/^0x/, ""),
   tokenId:
